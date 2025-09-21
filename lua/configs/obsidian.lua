@@ -5,40 +5,32 @@ if not present then
 end
 
 obsidian.setup({
-	workspaces = {
-		{
-			name = "daily",
-			path = "~/Obsidian/DailyNotes",
-		},
-		{
-			name = "kafka",
-			path = "~/Obsidian/Kafka/",
-		},
-		{
-			name = "js",
-			path = "~/Obsidian/JSKnowledge/",
-		},
-		{
-			name = "ts",
-			path = "~/Obsidian/TSKnowledge/",
-		},
-		{
-			name = "barodia",
-			path = "~/Obsidian/barodia/",
-		},
-		{
-			name = "docker",
-			path = "~/Obsidian/Docker/",
-		},
-		{
-			name = "algo",
-			path = "~/Obsidian/Алгоритмы и структуры данных/",
-		},
-		{
-			name = "test",
-			path = "~/Obsidian/Теория тестирования/",
-		},
-	},
+      workspaces = {
+        {
+          name = "studing",
+          path = "~/Obsidian/Ajax Studing/",
+        },
+        {
+          name = "home",
+          path = "~/Obsidian/Homework/",
+        },
+        {
+          name = "theory",
+          path = "~/Obsidian/Theory_of_testing/",
+        },
+        {
+          name = "daily",
+          path = "~/Obsidian/DailyTasks/",
+        },
+        {
+          name = "templates",
+          path = "~/Obsidian/Templates/",
+        },
+        {
+          name = "summary",
+          path = "~/Obsidian/Summary/",
+        },
+      },
 
 	daily_notes = {
 		date_format = "%Y-%m-%d",

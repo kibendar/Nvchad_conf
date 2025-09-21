@@ -1,7 +1,7 @@
 {
   "LuaSnip": { "branch": "master", "commit": "b3104910bb5ebf40492aadffae18f2528fa757d9" },
   "NvChad": { "branch": "v2.5", "commit": "b5b38ebee53bcc8b71a917916ce61504ffffd509" },
-  "base46": { "branch": "v3.0", "commit": "390bbb6cf149dc9da1a91548598c809f62fbc3c6" },
+  "base46": { "branch": "v3.0", "commit": "c3ee258239801e88eb6cd04c596cc292c88b91e5" },
   "better-escape.nvim": { "branch": "master", "commit": "19a38aab94961016430905ebec30d272a01e9742" },
   "blink.cmp": { "branch": "main", "commit": "327fff91fe6af358e990be7be1ec8b78037d2138" },
   "cmp-buffer": { "branch": "main", "commit": "b74fab3656eea9de20a9b8116afa3cfc4ec09657" },
@@ -51,7 +51,7 @@
   "telescope.nvim": { "branch": "master", "commit": "b4da76be54691e854d3e0e02c36b0245f945c2c7" },
   "todo-comments.nvim": { "branch": "main", "commit": "304a8d204ee787d2544d8bc23cd38d2f929e7cc5" },
   "trouble.nvim": { "branch": "main", "commit": "3fb3bd737be8866e5f3a170abc70b4da8b5dd45a" },
-  "ui": { "branch": "v3.0", "commit": "4852e04faefbba3a18cb197b76ac00f4bc2e615f" },
+  "ui": { "branch": "v3.0", "commit": "532d566190391f2ddc388a5b1093b0f227366e87" },
   "url-open": { "branch": "mini", "commit": "7727e6146afea2254de08d0e65fd2cf904be338d" },
   "vim-flog": { "branch": "master", "commit": "665b16ac8915f746bc43c9572b4581a5e9047216" },
   "vim-fugitive": { "branch": "master", "commit": "61b51c09b7c9ce04e821f6cf76ea4f6f903e3cf4" },
