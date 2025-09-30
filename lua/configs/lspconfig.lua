@@ -8,14 +8,14 @@ local servers = {
 	"texlab",
 	"clangd",
 	"ts_ls",
-	"remark-language-server",
-	"ltex", -- This will now use ltex-ls-plus
 	"ast-grep",
 	"docker-compose-language-server",
 	"dockerfile-language-server",
 	"bash-language-server",
 	"kotlin_language_server", -- Added Kotlin LSP
-	-- "rust-analyzer",
+	"rust-analyzer",
+	"lemminx",
+	"marksman",
 }
 vim.lsp.enable(servers)
 vim.lsp.config("*", {
@@ -30,6 +30,49 @@ vim.lsp.config("*", {
 		},
 	},
 })
+
+-- Markdown (marksman)
+vim.lsp.config.marksman = {
+	cmd = { "marksman", "server" },
+	filetypes = { "markdown", "markdown.mdx" },
+	root_markers = {
+		".marksman.toml",
+		".git",
+		".obsidian",
+		"README.md",
+	},
+	settings = {
+		marksman = {
+			-- Completion settings
+			completion = {
+				wiki = {
+					enabled = true,
+				},
+			},
+			-- Cross-references and linking
+			references = {
+				enabled = true,
+			},
+			-- Document symbols
+			outline = {
+				enabled = true,
+			},
+			-- Hover information
+			hover = {
+				enabled = true,
+			},
+			-- Diagnostics
+			diagnostics = {
+				enabled = true,
+			},
+			-- Wiki-style linking (useful for note-taking)
+			wiki = {
+				enabled = true,
+			},
+		},
+	},
+	single_file_support = true,
+}
 -- Java (jdtls)
 -- vim.lsp.config.jdtls = {
 -- 	cmd = { "jdtls" },
@@ -52,12 +95,16 @@ vim.lsp.config.kotlin_language_server = {
 		"pom.xml",
 		".git",
 	},
+	cmd_env = {
+		JAVA_HOME = "/usr/lib/jvm/java-21-openjdk",
+		PATH = "/usr/lib/jvm/java-21-openjdk/bin:" .. vim.env.PATH,
+	},
 	settings = {
 		kotlin = {
 			-- Compiler options
 			compiler = {
 				jvm = {
-					target = "17", -- or "11", "8" depending on your project
+					target = "21", -- or "11", "8" depending on your project
 				},
 			},
 			-- Indexing settings
@@ -88,15 +135,28 @@ vim.lsp.config.kotlin_language_server = {
 }
 -- Python (pyright)
 vim.lsp.config.pyright = {
+	cmd = { "pyright-langserver", "--stdio" },
+	filetypes = { "python" },
+	root_markers = {
+		"pyproject.toml",
+		"setup.py",
+		"setup.cfg",
+		"requirements.txt",
+		"Pipfile",
+		"pyrightconfig.json",
+		".git",
+	},
 	settings = {
 		python = {
 			analysis = {
 				autoSearchPaths = true,
 				useLibraryCodeForTypes = true,
-				diagnosticMode = "workspace",
+				diagnosticMode = "workspace", -- or "openFilesOnly" for better performance
+				typeCheckingMode = "basic", -- "off", "basic", or "strict"
 			},
 		},
 	},
+	single_file_support = true,
 }
 -- JS / TS (tsserver)
 vim.lsp.config.tsserver = {
@@ -120,6 +180,7 @@ vim.lsp.config.clangd = {
 	root_markers = { ".clangd", "compile_commands.json", ".git" },
 }
 -- Lua (lua_ls)
+-- Lua (lua_ls)
 vim.lsp.config.lua_ls = {
 	on_attach = on_attach,
 	capabilities = capabilities,
@@ -129,18 +190,11 @@ vim.lsp.config.lua_ls = {
 				globals = { "vim" },
 			},
 			workspace = {
-				library = {
-					[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-					[vim.fn.stdpath("config") .. "/lua"] = true,
-				},
 				checkThirdParty = false,
 			},
 			telemetry = { enable = false },
 		},
 	},
-	root_dir = function()
-		return vim.fn.getcwd()
-	end,
 }
 -- LaTeX (texlab)
 vim.lsp.config.texlab = {
@@ -157,82 +211,6 @@ vim.lsp.config.texlab = {
 			},
 		},
 	},
-}
--- LTeX-LS-Plus configuration (enhanced ltex-ls)
-vim.lsp.config.ltex = {
-	settings = {
-		ltex = {
-			language = "en-US", -- the main/default language
-			enabledLanguages = { "en-US", "ru-RU", "uk-UA" },
-			dictionary = {
-				["en-US"] = {},
-				["ru-RU"] = {},
-				["uk-UA"] = {},
-			},
-			-- disabledRules = {
-			--   ["en-US"] = {},
-			--   ["ru-RU"] = {},
-			--   ["uk-UA"] = {},
-			-- },
-			hiddenFalsePositives = {
-				["en-US"] = {},
-				["ru-RU"] = {},
-				["uk-UA"] = {},
-			},
-			-- Enhanced ltex-ls-plus specific settings
-			additionalRules = {
-				enablePickyRules = true,
-				motherTongue = "en-US",
-			},
-			-- Performance improvements
-			sentenceCacheSize = 2000,
-			completionEnabled = true,
-			-- External dictionary support (ltex-ls-plus feature)
-			externalDictionary = {
-				enabled = false,
-				-- path = "/path/to/your/dictionary.txt", -- uncomment and set path if needed
-			},
-			-- Better multilingual support
-			languageToolHttpServerUri = "", -- leave empty for local processing
-			languageToolOrgUsername = "",
-			languageToolOrgApiKey = "",
-		},
-	},
-	cmd = { "ltex-ls-plus" }, -- Changed from "ltex-ls" to "ltex-ls-plus"
-	filetypes = {
-		"bib",
-		"gitcommit",
-		"markdown",
-		"org",
-		"plaintex",
-		"rst",
-		"rnoweb",
-		"tex",
-		"pandoc",
-		"quarto",
-		"rmd",
-		"context",
-		"html",
-		"xhtml",
-		"mail",
-		"text",
-	},
-	root_markers = { ".git" },
-	single_file_support = true,
-	-- Additional capabilities specific to ltex-ls-plus
-	init_options = {
-		customCapabilities = {
-			workspaceSpecificConfiguration = true,
-		},
-	},
-}
--- Remark LSP (remark-language-server)
-vim.lsp.config["remark-language-server"] = {
-	cmd = { "remark-language-server", "--stdio" },
-	filetypes = { "markdown" },
-	root_dir = function(fname)
-		return vim.fs.dirname(vim.fs.find({ ".git", ".remarkrc" }, { upward = true })[1])
-	end,
 }
 -- Docker Compose LSP
 vim.lsp.config["docker-compose-language-server"] = {
@@ -291,4 +269,355 @@ vim.lsp.config["bash-language-server"] = {
 		},
 	},
 	single_file_support = true,
+}
+
+-- XML (lemminx)
+vim.lsp.config.lemminx = {
+	cmd = { "lemminx" },
+	filetypes = { "xml", "xsd", "xsl", "xslt", "svg" },
+	root_markers = {
+		".git",
+		"pom.xml",
+		"build.gradle",
+		"build.gradle.kts",
+		"web.xml",
+		"*.xsd",
+	},
+	settings = {
+		xml = {
+			-- Server settings
+			server = {
+				workDir = "~/.cache/lemminx",
+			},
+			-- Completion settings
+			completion = {
+				autoCloseTags = true,
+				autoCloseRemovesContent = false,
+			},
+			-- Validation settings
+			validation = {
+				enabled = true,
+				namespaces = {
+					enabled = "always", -- "always", "never", or "onNamespaceEncountered"
+				},
+				schema = {
+					enabled = "always", -- "always", "never", or "onValidSchema"
+				},
+				disallowDocTypeDecl = false,
+				resolveExternalEntities = false,
+			},
+			-- Formatting settings
+			format = {
+				enabled = true,
+				splitAttributes = false,
+				joinCDATALines = false,
+				joinCommentLines = false,
+				joinContentLines = false,
+				spaceBeforeEmptyCloseTag = true,
+				quotations = "doubleQuotes", -- "doubleQuotes" or "singleQuotes"
+				preserveAttributeLineBreaks = false,
+				preserveEmptyContent = false,
+				preservedNewlines = 2,
+				maxLineWidth = 0, -- 0 means no limit
+				grammarAwareFormatting = true,
+			},
+			-- Symbol settings
+			symbols = {
+				enabled = true,
+				excluded = {},
+				maxItemsComputed = 5000,
+				showReferencedGrammars = false,
+			},
+			-- CodeLens settings
+			codeLens = {
+				enabled = false,
+			},
+			-- Hover settings
+			hover = {
+				enabled = true,
+			},
+			-- Folding settings
+			foldings = {
+				includeClosingTagInFold = false,
+			},
+			-- Preferences
+			preferences = {
+				includeInlayParameterNameHints = "none", -- "none", "literals", or "all"
+				includeInlayPropertyDeclarationTypeHints = false,
+				includeInlayVariableTypeHints = false,
+				includeInlayFunctionLikeReturnTypeHints = false,
+				showSchemaDocumentationType = "all", -- "all", "documentation", or "none"
+			},
+			-- Catalogs for schema/DTD resolution
+			catalogs = {
+				-- Add paths to XML catalogs if needed
+				-- "path/to/catalog.xml"
+			},
+			-- Java-specific settings (lemminx runs on Java)
+			java = {
+				home = nil, -- Will use JAVA_HOME if not set
+			},
+		},
+	},
+	single_file_support = true,
+	-- Custom initialization options
+	init_options = {
+		settings = {
+			xml = {
+				logs = {
+					client = true,
+					server = true,
+				},
+				trace = {
+					server = "verbose", -- "off", "messages", "verbose"
+				},
+			},
+		},
+		extendedClientCapabilities = {
+			codeLens = {
+				codeLensKind = {
+					supported = true,
+				},
+			},
+			actionableNotificationSupported = true,
+			openSettingsCommandSupported = true,
+		},
+	},
+}
+
+-- Rust (rust-analyzer)
+vim.lsp.config["rust-analyzer"] = {
+	cmd = { "rust-analyzer" },
+	filetypes = { "rust" },
+	root_markers = {
+		"Cargo.toml",
+		"Cargo.lock",
+		"rust-project.json",
+		".git",
+	},
+	settings = {
+		["rust-analyzer"] = {
+			-- Import settings
+			imports = {
+				granularity = {
+					group = "module",
+				},
+				prefix = "self",
+			},
+			-- Cargo settings
+			cargo = {
+				buildScripts = {
+					enable = true,
+				},
+				allFeatures = true,
+				loadOutDirsFromCheck = true,
+				runBuildScripts = true,
+			},
+			-- Procedural macros
+			procMacro = {
+				enable = true,
+				ignored = {},
+				attributes = {
+					enable = true,
+				},
+			},
+			-- Diagnostics
+			diagnostics = {
+				enable = true,
+				disabled = {},
+				remapPrefix = {},
+				warningsAsHint = {},
+				warningsAsInfo = {},
+			},
+			-- Lens settings (show references, implementations, etc.)
+			lens = {
+				enable = true,
+				debug = {
+					enable = true,
+				},
+				implementations = {
+					enable = true,
+				},
+				references = {
+					adt = {
+						enable = false,
+					},
+					enumVariant = {
+						enable = false,
+					},
+					method = {
+						enable = false,
+					},
+					trait = {
+						enable = false,
+					},
+				},
+				run = {
+					enable = true,
+				},
+			},
+			-- Inlay hints
+			inlayHints = {
+				bindingModeHints = {
+					enable = false,
+				},
+				chainingHints = {
+					enable = true,
+				},
+				closingBraceHints = {
+					enable = true,
+					minLines = 25,
+				},
+				closureReturnTypeHints = {
+					enable = "never",
+				},
+				lifetimeElisionHints = {
+					enable = "never",
+					useParameterNames = false,
+				},
+				maxLength = 25,
+				parameterHints = {
+					enable = true,
+				},
+				reborrowHints = {
+					enable = "never",
+				},
+				renderColons = true,
+				typeHints = {
+					enable = true,
+					hideClosureInitialization = false,
+					hideNamedConstructor = false,
+				},
+			},
+			-- Completion settings
+			completion = {
+				callable = {
+					snippets = "fill_arguments",
+				},
+				postfix = {
+					enable = true,
+				},
+				privateEditable = {
+					enable = false,
+				},
+				snippets = {
+					custom = {},
+				},
+			},
+			-- Assist settings (code actions)
+			assist = {
+				importEnforceGranularity = true,
+				importPrefix = "plain",
+			},
+			-- Call hierarchy
+			callInfo = {
+				full = true,
+			},
+			-- Check settings (for cargo check)
+			checkOnSave = {
+				enable = true,
+				command = "clippy",
+				extraArgs = {},
+				allTargets = true,
+			},
+			-- Highlighting settings
+			highlightRelated = {
+				breakPoints = {
+					enable = true,
+				},
+				exitPoints = {
+					enable = true,
+				},
+				references = {
+					enable = true,
+				},
+				yieldPoints = {
+					enable = true,
+				},
+			},
+			-- Hover settings
+			hover = {
+				documentation = {
+					enable = true,
+				},
+				links = {
+					enable = true,
+				},
+				memoryLayout = {
+					alignment = "hexadecimal",
+					enable = false,
+					niches = false,
+					offset = "hexadecimal",
+					size = "both",
+				},
+			},
+			-- Workspace settings
+			workspace = {
+				symbol = {
+					search = {
+						scope = "workspace",
+						kind = "only_types",
+					},
+				},
+			},
+			-- Semantic tokens
+			semanticHighlighting = {
+				strings = {
+					enable = true,
+				},
+				punctuation = {
+					enable = false,
+					separate = {
+						macro = {
+							bang = false,
+						},
+					},
+					specialization = {
+						enable = false,
+					},
+				},
+				operator = {
+					enable = true,
+					specialization = {
+						enable = false,
+					},
+				},
+			},
+			-- Typing settings
+			typing = {
+				autoClosingAngleBrackets = {
+					enable = false,
+				},
+			},
+			-- Experimental features
+			experimental = {
+				procAttrMacros = true,
+			},
+		},
+	},
+	-- Capabilities for enhanced features
+	capabilities = vim.tbl_deep_extend("force", vim.lsp.protocol.make_client_capabilities(), {
+		textDocument = {
+			completion = {
+				completionItem = {
+					snippetSupport = true,
+					resolveSupport = {
+						properties = { "documentation", "detail", "additionalTextEdits" },
+					},
+				},
+			},
+		},
+		experimental = {
+			serverStatusNotification = true,
+		},
+	}),
+	-- Custom initialization options
+	init_options = {
+		lspMux = {
+			version = "1",
+			method = "connect",
+			server = "rust-analyzer",
+		},
+	},
+	single_file_support = false, -- Rust-analyzer works best with Cargo projects
 }

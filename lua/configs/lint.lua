@@ -1,4 +1,6 @@
-require("lint").linters_by_ft = {
+local lint = require("lint")
+
+lint.linters_by_ft = {
 	javascript = { "eslint_d" },
 	typescript = { "eslint_d" },
 	typescriptreact = { "eslint_d" },
@@ -8,13 +10,13 @@ require("lint").linters_by_ft = {
 	c = { "cpplint" },
 	cpp = { "cpplint" },
 	lua = { "luacheck" },
-	-- rust = { "ast-grep" },
+	rust = { "bacon" }, -- Changed from ast-grep
 	bash = { "shellcheck" },
 	kotlin = { "ktlint" },
 }
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 	callback = function()
-		require("lint").try_lint()
+		lint.try_lint() -- Can use the local variable
 	end,
 })
